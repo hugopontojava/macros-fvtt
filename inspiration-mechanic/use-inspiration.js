@@ -10,17 +10,14 @@ main()
               return ui.notifications.error("No Inspiration on player's inventory!")
             } else {
                 await item.update( { 'data.qtd': item.data.data.qtd - 1 } )
-                if ( item.data.data.qtd <= 0 || item.data.data.qtd < 1 ) {
-                  return item.delete()
-                }
+                const inspecActor = actor.items.find( inspecActor => inspecActor.data.name == item.name);
+                  ChatMessage.create ({
+                    speaker: { alias: actor.name },
+                    content: '<h2>Use Inspiration</h2>' + `<h3>${actor.name} its using an @Item[Inspiração].</h3> Roll: [[/r 1d6]] <p>Left: ${inspecActor.data.data.qtd} of 3!</p>`
+                  })
+                  if ( item.data.data.qtd <= 0 || item.data.data.qtd < 1 ) {
+                    return item.delete()
+                  }
               }
         }
   }
-      // TODO: discover where put this code under
-  // const actorName = actor.name
-  // const itemLeft = item.data.data.qtd
-  // const chatContent = '<h2>Use Inspiration</h2>' + `<h3>${actorName} are using an @Item[Inspiração].</h3> [[/r 1d6]] <p>Left: ${itemLeft} Inspirations.</p>`
-  //  ChatMessage.create ({
-  //    speaker: { alias: actorName },
-  //    content: chatContent
-  //  })
