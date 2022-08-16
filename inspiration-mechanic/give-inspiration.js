@@ -11,7 +11,7 @@ main()
           await actor.createEmbeddedDocuments('Item', [ item.toObject() ])
             ChatMessage.create ({
               speaker: { alias: 'Dungeon Master' },
-              content: '<h2>Give Inspiration</h2>' + `<h3> ${actor.name} its recieving an @Item[Inspiração].</h3> <p>Have 1 of a 3 maximum!</p> [[/r 1d6]]`
+              content: '<h2>Give Inspiration</h2>' + `<h3> ${actor.name} its recieving an @Item[Inspiração].</h3> <p>Have 1 of a 3 maximum!</p>`
             })
         } else {
             await inspecActor.update( { 'data.qtd': inspecActor.data.data.qtd + 1 } )
@@ -21,7 +21,7 @@ main()
             } else {
                 ChatMessage.create ({
                   speaker: { alias: 'Dungeon Master' },
-                  content: '<h2>Give Inspiration</h2>' + `<h3> ${actor.name} its recieving an @Item[Inspiração].</h3> <p>Have ${inspecActor.data.data.qtd} of a 3 maximum!</p> [[/r 1d6]]`
+                  content: '<h2>Give Inspiration</h2>' + `<h3> ${actor.name} its recieving an @Item[Inspiração].</h3> <p>Have ${inspecActor.data.data.qtd} of a 3 maximum!</p>`
                 })
               }
           }
