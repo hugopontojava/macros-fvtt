@@ -1,23 +1,27 @@
 main()
-  async function main() {
-    const token = canvas.tokens.controlled
-      if ( token.length == 0 || token.length > 1 ) {
-        return ui.notifications.error('Token is not selected!')
-     }  else {
-          const actor = token[0].actor
-          const item = actor.items.find(item => item.data.name == 'Inspiração')
-            if ( item == null || item == undefined ) {
-              return ui.notifications.error("No Inspiration on player's inventory!")
-            } else {
-                await item.update( { 'data.qtd': item.data.data.qtd - 1 } )
-                const inspecActor = actor.items.find( inspecActor => inspecActor.data.name == item.name);
-                  ChatMessage.create ({
-                    speaker: { alias: actor.name },
-                    content: '<h2>Use Inspiration</h2>' + `<h3>${actor.name} its using an @Item[Inspiração].</h3> Roll: [[/r 1d6]] <p>Left: ${inspecActor.data.data.qtd} of 3!</p>`
-                  })
-                  if ( item.data.data.qtd <= 0 || item.data.data.qtd < 1 ) {
-                    return item.delete()
-                  }
-              }
-        }
-  }
+async function main() {
+	const canvasToken = canvas.tokens.controlled
+	if (canvasToken.length == 0 || canvasToken.length > 1) {
+		return ui.notifications.error("Selecione apenas um Token ou nenhum está selecionado!")
+	} else {
+		const tokenActor = canvasToken[0].actor
+		const createdItem = game.items.getName("Inspiração")
+		const inspecInvent = tokenActor.inventory.find((item) => tokenActor.inventory.getName("Inspiração"))
+		if (inspecInvent == null || inspecInvent == undefined) {
+			await tokenActor.createEmbeddedDocuments("Item", [createdItem.toObject()])
+			ChatMessage.create({
+				speaker: { alias: "Narrador" },
+				content: "<h2>Dar Inspiração</h2>" + `<h3> ${tokenActor.name} está recebendo uma @Item[Inspiração].</h3> <p>Tem: 1 de 3!</p>`})
+		} else {
+			await inspecInvent.update({"system.quantity": inspecInvent.quantity + 1})
+			if (inspecInvent.quantity > 3) {
+				await inspecInvent.update({"system.quantity": inspecInvent.quantity - 1})
+				return ui.notifications.error("Ê jogadore chegou no número máximo de Inspirações!")
+			} else {
+				ChatMessage.create({
+					speaker: { alias: "Narrador" },
+					content: "<h2>Dar Inspiração</h2>" + `<h3>${tokenActor.name} está recebendo uma @Item[Inspiração].</h3> <p>Tem: ${inspecInvent.quantity} de 3!</p>`})
+			}
+		}
+	}
+}
